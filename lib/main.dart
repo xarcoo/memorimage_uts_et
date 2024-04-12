@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 import 'package:memorimage_uts_et/game.dart';
 import 'package:memorimage_uts_et/highScore.dart';
@@ -47,8 +45,9 @@ class MainApp extends StatelessWidget {
 
 void doLogout() async {
   final prefs = await SharedPreferences.getInstance();
+  active_user = "";
   prefs.remove("username");
-  LoginForm();
+  main();
 }
 
 class HomePage extends StatefulWidget {
