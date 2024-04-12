@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memorimage_uts_et/game.dart';
-import 'package:memorimage_uts_et/highScore.dart';
+import 'package:memorimage_uts_et/highscore.dart';
 import 'package:memorimage_uts_et/result.dart';
 import 'login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,7 +33,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         'game': (context) => Game(),
-        'highScore': (context) => HighScore(),
+        'highScore': (context) => Highscore(),
         'login': (context) => LoginForm(),
         'result': (context) => Result(),
       },
