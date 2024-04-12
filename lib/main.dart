@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 String active_user = "";
 
+Future<String> checkUser() async {
+  final prefs = await SharedPreferences.getInstance();
+  String username = prefs.getString("username") ?? '';
+  return username;
+}
+
 void main() {
-  runApp(const MainApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  checkUser().then((String result) {
+    if (result == '')
+      runApp(LoginForm());
+    else {
+      active_user = result;
+      runApp(MainApp());
+    }
+  });
 }
 
 class MainApp extends StatelessWidget {
@@ -14,8 +28,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      routes: {
-      },
+      routes: {},
       title: 'UTS ET',
       home: const HomePage(title: "HEHE"),
     );
@@ -24,7 +37,7 @@ class MainApp extends StatelessWidget {
 
 void doLogout() async {
   final prefs = await SharedPreferences.getInstance();
-  prefs.remove("user_id");
+  prefs.remove("username");
   LoginForm();
 }
 
@@ -37,7 +50,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>{
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,8 +79,9 @@ class _HomePageState extends State<HomePage>{
               title: new Text("Log Out"),
               leading: new Icon(Icons.logout),
               onTap: () {
-                active_user != "" ? doLogout() :
-                Navigator.pushNamed(context, "login");
+                active_user != ""
+                    ? doLogout()
+                    : Navigator.pushNamed(context, "login");
               },
             )
           ],
