@@ -105,6 +105,28 @@ class _HomePageState extends State<HomePage> {
         // the App.build method, and use it to set  our appbar title.
         title: Text("Halaman Utama"),
       ),
+      body: Column(
+        children: [
+          Container(
+            height: 500,
+            child: Center(
+              child: Column(
+                children: [
+                  Text(
+                    "Ini Game menebak Gambar"
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Game()));
+                      },
+                      child: Text("Play Game")
+                  ),
+                ],
+              )
+            )
+          )
+        ],
+      ),
     );
   }
 }
