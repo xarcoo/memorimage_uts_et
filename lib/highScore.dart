@@ -1,17 +1,78 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class HighScore extends StatelessWidget{
+import 'package:flutter/material.dart';
+import 'package:memorimage_uts_et/class/user_highscore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class Highscore extends StatefulWidget {
+  const Highscore({super.key});
+
+  @override
+  State<Highscore> createState() => _Highscore();
+}
+
+class _Highscore extends State<Highscore> {
+  // ini untuk dapet list highscore
+  List<UserHighscore> list_highscore = [];
+
+  @override
+  void initState() {
+    getHighscore().then((value) {
+      setState(() {
+        list_highscore =
+            value.map((e) => UserHighscore.fromMap(jsonDecode(e))).toList();
+      });
+    });
+
+    super.initState();
+  }
+
+  // ini untuk dapet list highscore
+  Future<List<String>> getHighscore() async {
+    final sp_highscore = await SharedPreferences.getInstance();
+    List<String> listTmp = sp_highscore.getStringList('highscore') ?? [];
+    return listTmp;
+  }
+
+  List<Widget> widgets() {
+    List<Widget> tmp = [];
+    int i = 1;
+    for (var item in list_highscore) {
+      i++;
+      Widget w = Container(
+        child: Column(
+          children: [
+            Text(
+              '$i. ' + item.username + '(' + item.score.toString() + ')',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      );
+      tmp.add(w);
+    }
+    return tmp;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text("History"),
-      // ),
+      appBar: AppBar(
+        title: Text("HIGHSCORE"),
+      ),
       body: Center(
-        child: Text("This is High Score."),
+        child: Column(
+          children: [
+            Container(
+              child: Text(
+                'HIGHSCORE',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            ...widgets(),
+          ],
+        ),
       ),
     );
   }
-
 }
