@@ -14,6 +14,9 @@ class _GameState extends State<Game> {
   bool animated = false;
   late Timer _timer;
   late Timer _timerGambar;
+  bool animatedAnswer = false;
+  bool animatedQuestion = false;
+  int userPoint = 0;
   double opacityLev = 0;
   List<Question> _questions = [];
   int i = 0;
@@ -32,17 +35,18 @@ class _GameState extends State<Game> {
       });
     });
 
-    _timerGambar = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+    _timerGambar = Timer.periodic(Duration(milliseconds: 3000), (timer) {
       setState(() {
+        animatedQuestion = true;
         if(opacityLev == 0){
           opacityLev = 1;
           if(i == _questions.length - 1){
             timer.cancel();
             opacityLev = 0;
+            animatedAnswer = true;
           }
           else{
             i++;
-
           }
         }
         else if(opacityLev == 1){
@@ -97,7 +101,6 @@ class _GameState extends State<Game> {
   }
 
   void checkAnswer(String answer){
-
     setState(() {
       if (answer == _questions[j].answer) {
         showDialog<String>(
@@ -110,6 +113,7 @@ class _GameState extends State<Game> {
                     onPressed: () {
                       // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
                       Navigator.of(context).pop();
+                      userPoint += 100;
                     },
                     child: const Text('OK')
                 )
@@ -128,6 +132,7 @@ class _GameState extends State<Game> {
                     onPressed: () {
                       // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
                       Navigator.of(context).pop();
+                      userPoint -= 50;
                     },
                     child: const Text('OK')
                 )
@@ -135,7 +140,7 @@ class _GameState extends State<Game> {
             )
         );
       }
-      
+
       if(j < questions.length - 1){
         j++;
       }
@@ -173,25 +178,28 @@ class _GameState extends State<Game> {
         children: [
           Container(
               width: 250.0,
-              height: 250.0,
+              height: animatedQuestion == true ? 20.0 : MediaQuery.of(context).size.height,
               child: AnimatedAlign(
                 alignment: animated ? Alignment.topCenter : Alignment.center,
-                duration: const Duration(seconds: 3),
+                duration: const Duration(seconds: 2),
                 curve: Curves.fastOutSlowIn,
                 child: Text("Get Ready"),
-              )),
+              )
+          ),
           Container(
               width: 250.0,
               height: _timerGambar.isActive ? 250.0 : 0,
               child: AnimatedOpacity(
                 opacity: opacityLev,
-                duration: const Duration(seconds: 1),
+                duration: const Duration(seconds: 3),
                 child: Image.network(questions[i].answer),
               )
           ),
           Container(
-            height: MediaQuery.of(context).size.height,
+              width: 25.0,
+            height: animatedAnswer == true ? MediaQuery.of(context).size.height : 0,
               child: GridView.count(
+                childAspectRatio: (1/.4),
                 crossAxisCount: 2,
                 children: gambar(j),
               )
