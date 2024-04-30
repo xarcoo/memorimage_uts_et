@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:memorimage_uts_et/class/question.dart';
 import 'package:memorimage_uts_et/class/user_highscore.dart';
+import 'package:memorimage_uts_et/result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String active_user = "";
@@ -131,57 +132,58 @@ class _GameState extends State<Game> {
 
   void checkAnswer(String answer) {
     setState(() {
-      if (answer == _questions[j].answer) {
-        showDialog<String>(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: Text('Quiz'),
-            content: Text('Betul'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
-                  Navigator.of(context).pop();
-                  userPoint += 100;
-                },
-                child: const Text('OK'),
-              )
-            ],
-          ),
-        );
-      } else {
-        showDialog<String>(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: Text('Quiz'),
-            content: Text('Salah'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
-                  Navigator.of(context).pop();
-                  userPoint -= 50;
-                },
-                child: const Text('OK'),
-              )
-            ],
-          ),
-        );
-      }
 
       if (j < questions.length - 1) {
+        if (answer == _questions[j].answer) {
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: Text('Quiz'),
+              content: Text('Point gain +100'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
+                    Navigator.of(context).pop();
+                    userPoint += 100;
+                  },
+                  child: const Text('OK'),
+                )
+              ],
+            ),
+          );
+        } else {
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: Text('Quiz'),
+              content: Text('Point gain -50'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
+                    Navigator.of(context).pop();
+                    userPoint -= 50;
+                  },
+                  child: const Text('OK'),
+                )
+              ],
+            ),
+          );
+        }
         j++;
       } else {
         showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
             title: Text('Quiz'),
-            content: Text('Tamat'),
+            content: Text('Your total point is ' + userPoint.toString()),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
-                  Navigator.of(context).pop();
+                  setScore();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const Result()));
+                  // Navigator.of(context).pop();
                 },
                 child: const Text('OK'),
               )

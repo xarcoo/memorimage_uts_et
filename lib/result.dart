@@ -50,7 +50,7 @@ class _Result extends State<Result> {
     // masukin ke list
     list.add(UserHighscore(active_user, right_guess));
 
-    super.initState;
+    super.initState;  
 
     getPrefs().then((value) {
       setState(() {
