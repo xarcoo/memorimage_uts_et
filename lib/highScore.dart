@@ -64,6 +64,7 @@ class _Highscore extends State<Highscore> {
     return Scaffold(
       appBar: AppBar(
         title: Text("HIGHSCORE"),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
         child: Column(

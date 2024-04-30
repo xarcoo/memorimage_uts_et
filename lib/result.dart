@@ -11,6 +11,13 @@ late Map<String, dynamic> _prefs;
 String active_user = "";
 int right_guess = 0;
 String user_title = "";
+List<UserHighscore> list = [];
+
+Future<List<String>> getHighscore() async {
+  final sp_highscore = await SharedPreferences.getInstance();
+  List<String> listTmp = sp_highscore.getStringList('highscore') ?? [];
+  return listTmp;
+}
 
 Future<Map<String, dynamic>> getPrefs() async {
   final prefs = await SharedPreferences.getInstance();
@@ -39,6 +46,9 @@ class _Result extends State<Result> {
             value.map((e) => UserHighscore.fromMap(jsonDecode(e))).toList();
       });
     });
+
+    // masukin ke list
+    list.add(UserHighscore(active_user, right_guess));
 
     super.initState;
 
@@ -90,11 +100,25 @@ class _Result extends State<Result> {
     prefsAdd.setStringList('highscore', listTemp);
   }
 
+  // void setHighscore() async {
+  //   final prefs = await SharedPreferences.getInstance();
+
+  //   // untuk urut berdasarkan score
+  //   list.sort((a, b) => a.score.compareTo(b.score));
+  //   list.reversed;
+
+  //   // masukin ke prefs
+  //   List<String> list_highscore =
+  //       list.map((e) => jsonEncode(e.toMap())).toList();
+  //   prefs.setStringList("highscore", list_highscore);
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("RESULT"),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
         child: Column(
