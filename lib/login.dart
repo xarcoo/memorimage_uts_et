@@ -51,8 +51,8 @@ class _LoginState extends State<Login> {
                 },
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Email',
-                    hintText: 'Enter valid email id as abc@gmail.com'),
+                    labelText: 'Username',
+                    hintText: 'Enter username'),
               ),
             ),
             Padding(

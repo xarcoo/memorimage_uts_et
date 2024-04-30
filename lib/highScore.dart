@@ -43,17 +43,20 @@ class _Highscore extends State<Highscore> {
     List<Widget> tmp = [];
     int i = 1;
     for (var item in list_highscore) {
-      i++;
       Widget w = Container(
         child: Column(
           children: [
-            Text(
-              '$i. ' + item.username + '(' + item.score.toString() + ')',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                '$i. ' + item.username + '(' + item.score.toString() + ')',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
       );
+      i++;
       tmp.add(w);
     }
     return tmp;

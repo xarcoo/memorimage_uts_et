@@ -29,12 +29,6 @@ Future<Map<String, dynamic>> getPrefs() async {
   return {'user': active_user, 'guess': right_guess, 'point': point};
 }
 
-// Future<int> getPrefs() async {
-//   final prefs = await SharedPreferences.getInstance();
-//   right_guess = prefs.getInt('guess') ?? 0;
-//   return
-// }
-
 class Result extends StatefulWidget {
   const Result({super.key});
 
@@ -55,18 +49,33 @@ class _Result extends State<Result> {
       });
     });
 
-    // masukin ke list
-    list.add(UserHighscore(active_user, right_guess));
-
     super.initState;
 
     getPrefs().then((value) {
       setState(() {
         _prefs = value;
+
+        if (_prefs['guess'] == 5) {
+          user_title = "Maestro dell'Indovinello (Master of Riddles)";
+        } else if (_prefs['guess'] == 4) {
+          user_title = "Esperto dell'Indovinello (Expert of Riddles)";
+        } else if (_prefs['guess'] == 3) {
+          user_title = "Abile Indovinatore (Skillful Guesser)";
+        } else if (_prefs['guess'] == 2) {
+          user_title = "Principiante dell'Indovinello (Riddle Beginner)";
+        } else if (_prefs['guess'] == 1) {
+          user_title = "Neofita dell'Indovinello (Riddle Novice)";
+        } else if (_prefs['guess'] == 0) {
+          user_title = "Sfortunato Indovinatore (Unlucky Guesser)";
+        }
+
+        addHighscore(UserHighscore(_prefs['user'], _prefs['point']));
       });
     });
 
-    checkTitle();
+    // masukin ke list
+    // list.add(UserHighscore(active_user, right_guess));
+    // addHighscore(UserHighscore(active_user, point));
   }
 
   // ini untuk dapet list highscore
@@ -76,35 +85,27 @@ class _Result extends State<Result> {
     return listTmp;
   }
 
-  void checkTitle() {
-    if (_prefs['guess'] == 5) {
-      user_title = "Maestro dell'Indovinello (Master of Riddles)";
-    } else if (_prefs['guess'] == 4) {
-      user_title = "Esperto dell'Indovinello (Expert of Riddles)";
-    } else if (_prefs['guess'] == 3) {
-      user_title = "Abile Indovinatore (Skillful Guesser)";
-    } else if (_prefs['guess'] == 2) {
-      user_title = "Principiante dell'Indovinello (Riddle Beginner)";
-    } else if (_prefs['guess'] == 1) {
-      user_title = "Neofita dell'Indovinello (Riddle Novice)";
-    } else if (_prefs['guess'] == 0) {
-      user_title = "test";
-    }
-  }
-
   void addHighscore(UserHighscore uh) async {
     final prefsAdd = await SharedPreferences.getInstance();
-    for (var item in list_highscore) {
-      if (right_guess >= item.score) {
-        list_highscore.add(uh);
+    if (list_highscore.isEmpty) {
+      list_highscore.add(uh);
+    } else if (list_highscore.length == 1) {
+      list_highscore.add(uh);
 
-        list_highscore.sort((b, a) => a.score.compareTo(b.score));
-        if (list_highscore.length > 3) {
-          list_highscore.removeLast();
-        }
+      list_highscore.sort((b, a) => a.score.compareTo(b.score));
+    } else {
+      // for (var item in list_highscore) {
+      // if (right_guess >= item.score) {
+      list_highscore.add(uh);
 
-        break;
+      list_highscore.sort((b, a) => a.score.compareTo(b.score));
+      if (list_highscore.length > 3) {
+        list_highscore.removeLast();
       }
+
+      // break;
+      // }
+      // }
     }
 
     List<String> listTemp =
