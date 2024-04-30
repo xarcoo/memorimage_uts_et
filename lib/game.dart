@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 String active_user = "";
 int userPoint = 0;
+int userGuess = 0;
 
 Future<String> checkUser() async {
   final prefs = await SharedPreferences.getInstance();
@@ -132,7 +133,6 @@ class _GameState extends State<Game> {
 
   void checkAnswer(String answer) {
     setState(() {
-
       if (j < questions.length - 1) {
         if (answer == _questions[j].answer) {
           showDialog<String>(
@@ -152,6 +152,7 @@ class _GameState extends State<Game> {
               ],
             ),
           );
+          // userGuess++;
         } else {
           showDialog<String>(
             context: context,
@@ -182,7 +183,8 @@ class _GameState extends State<Game> {
               TextButton(
                 onPressed: () {
                   setScore();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const Result()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Result()));
                   // Navigator.of(context).pop();
                 },
                 child: const Text('OK'),
@@ -245,6 +247,9 @@ void setScore() async {
   final prefs = await SharedPreferences.getInstance();
 
   // masukin ke prefs
-  prefs.setString("username", active_user);
-  prefs.setInt("highscore", userPoint);
+  prefs.setInt("point", userPoint);
+  prefs.setInt("guess", userGuess);
+
+  userPoint = 0;
+  userGuess = 0;
 }

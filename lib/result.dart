@@ -7,9 +7,10 @@ import 'package:memorimage_uts_et/class/user_highscore.dart';
 import 'package:memorimage_uts_et/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-late Map<String, dynamic> _prefs;
+late Map<String, dynamic> _prefs = {};
 String active_user = "";
 int right_guess = 0;
+int point = 0;
 String user_title = "";
 List<UserHighscore> list = [];
 
@@ -23,9 +24,16 @@ Future<Map<String, dynamic>> getPrefs() async {
   final prefs = await SharedPreferences.getInstance();
   active_user = prefs.getString("username") ?? "";
   right_guess = prefs.getInt("guess") ?? 0;
+  point = prefs.getInt('point') ?? 0;
 
-  return {'user': active_user, 'guess': right_guess};
+  return {'user': active_user, 'guess': right_guess, 'point': point};
 }
+
+// Future<int> getPrefs() async {
+//   final prefs = await SharedPreferences.getInstance();
+//   right_guess = prefs.getInt('guess') ?? 0;
+//   return
+// }
 
 class Result extends StatefulWidget {
   const Result({super.key});
@@ -50,7 +58,7 @@ class _Result extends State<Result> {
     // masukin ke list
     list.add(UserHighscore(active_user, right_guess));
 
-    super.initState;  
+    super.initState;
 
     getPrefs().then((value) {
       setState(() {
@@ -58,6 +66,17 @@ class _Result extends State<Result> {
       });
     });
 
+    checkTitle();
+  }
+
+  // ini untuk dapet list highscore
+  Future<List<String>> getHighscore() async {
+    final sp_highscore = await SharedPreferences.getInstance();
+    List<String> listTmp = sp_highscore.getStringList('highscore') ?? [];
+    return listTmp;
+  }
+
+  void checkTitle() {
     if (_prefs['guess'] == 5) {
       user_title = "Maestro dell'Indovinello (Master of Riddles)";
     } else if (_prefs['guess'] == 4) {
@@ -69,15 +88,8 @@ class _Result extends State<Result> {
     } else if (_prefs['guess'] == 1) {
       user_title = "Neofita dell'Indovinello (Riddle Novice)";
     } else if (_prefs['guess'] == 0) {
-      user_title = "Sfortunato Indovinatore (Unlucky Guesser)";
+      user_title = "test";
     }
-  }
-
-  // ini untuk dapet list highscore
-  Future<List<String>> getHighscore() async {
-    final sp_highscore = await SharedPreferences.getInstance();
-    List<String> listTmp = sp_highscore.getStringList('highscore') ?? [];
-    return listTmp;
   }
 
   void addHighscore(UserHighscore uh) async {
