@@ -17,10 +17,15 @@ class _Highscore extends State<Highscore> {
 
   @override
   void initState() {
+    List<UserHighscore> tmp = [];
     getHighscore().then((value) {
       setState(() {
-        list_highscore =
-            value.map((e) => UserHighscore.fromMap(jsonDecode(e))).toList();
+        tmp = value.map((e) => UserHighscore.fromMap(jsonDecode(e))).toList();
+        // ngambil 3 teratas
+        for (var i = 0; i < tmp.length; i++) {
+          list_highscore.add(tmp[i]);
+          if (i >= 3) break;
+        }
       });
     });
 

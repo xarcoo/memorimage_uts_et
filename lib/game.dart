@@ -1,7 +1,25 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:memorimage_uts_et/class/question.dart';
+import 'package:memorimage_uts_et/class/user_highscore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+String active_user = "";
+List<UserHighscore> list = [];
+
+Future<List<String>> getHighscore() async {
+  final sp_highscore = await SharedPreferences.getInstance();
+  List<String> listTmp = sp_highscore.getStringList('highscore') ?? [];
+  return listTmp;
+}
+
+Future<String> checkUser() async {
+  final prefs = await SharedPreferences.getInstance();
+  String username = prefs.getString("username") ?? '';
+  return username;
+}
 
 class Game extends StatefulWidget {
   const Game({super.key});
@@ -26,6 +44,19 @@ class _GameState extends State<Game> {
   void initState() {
     super.initState();
 
+    checkUser().then((value) {
+      setState(() {
+        active_user = value;
+      });
+    });
+
+    // ngambil highscore yg udah ada
+    getHighscore().then((value) {
+      setState(() {
+        list = value.map((e) => UserHighscore.fromMap(jsonDecode(e))).toList();
+      });
+    });
+
     _questions = questions;
     _questions.shuffle();
 
@@ -38,25 +69,23 @@ class _GameState extends State<Game> {
     _timerGambar = Timer.periodic(Duration(milliseconds: 3000), (timer) {
       setState(() {
         animatedQuestion = true;
-        if(opacityLev == 0){
+        if (opacityLev == 0) {
           opacityLev = 1;
-          if(i == _questions.length - 1){
+          if (i == _questions.length - 1) {
             timer.cancel();
             opacityLev = 0;
             animatedAnswer = true;
-          }
-          else{
+          } else {
             i++;
           }
-        }
-        else if(opacityLev == 1){
+        } else if (opacityLev == 1) {
           opacityLev = 0;
         }
       });
     });
   }
 
-  List<Widget> gambar(int i){
+  List<Widget> gambar(int i) {
     List<Widget> temp = [];
 
     Widget a = TextButton(
@@ -100,72 +129,64 @@ class _GameState extends State<Game> {
     return temp;
   }
 
-  void checkAnswer(String answer){
+  void checkAnswer(String answer) {
     setState(() {
       if (answer == _questions[j].answer) {
         showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
-              title: Text('Quiz'),
-              content: Text('Betul'),
-              actions: <Widget>[
-                TextButton(
-                    onPressed: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
-                      Navigator.of(context).pop();
-                      userPoint += 100;
-                    },
-                    child: const Text('OK')
-                )
-              ],
-            )
-        );
-      }
-      else{
+                  title: Text('Quiz'),
+                  content: Text('Betul'),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
+                          Navigator.of(context).pop();
+                          userPoint += 100;
+                        },
+                        child: const Text('OK'))
+                  ],
+                ));
+      } else {
         showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
-              title: Text('Quiz'),
-              content: Text('Salah'),
-              actions: <Widget>[
-                TextButton(
-                    onPressed: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
-                      Navigator.of(context).pop();
-                      userPoint -= 50;
-                    },
-                    child: const Text('OK')
-                )
-              ],
-            )
-        );
+                  title: Text('Quiz'),
+                  content: Text('Salah'),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
+                          Navigator.of(context).pop();
+                          userPoint -= 50;
+                        },
+                        child: const Text('OK'))
+                  ],
+                ));
       }
 
-      if(j < questions.length - 1){
+      if (j < questions.length - 1) {
         j++;
-      }
-      else{
+      } else {
+        // masukin ke list
+        list.add(UserHighscore(active_user, userPoint));
         showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
-              title: Text('Quiz'),
-              content: Text('Tamat'),
-              actions: <Widget>[
-                TextButton(
-                    onPressed: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('OK')
-                )
-              ],
-            )
-        );
+                  title: Text('Quiz'),
+                  content: Text('Tamat'),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('OK'))
+                  ],
+                ));
       }
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -178,14 +199,15 @@ class _GameState extends State<Game> {
         children: [
           Container(
               width: 250.0,
-              height: animatedQuestion == true ? 20.0 : MediaQuery.of(context).size.height,
+              height: animatedQuestion == true
+                  ? 20.0
+                  : MediaQuery.of(context).size.height,
               child: AnimatedAlign(
                 alignment: animated ? Alignment.topCenter : Alignment.center,
                 duration: const Duration(seconds: 2),
                 curve: Curves.fastOutSlowIn,
                 child: Text("Get Ready"),
-              )
-          ),
+              )),
           Container(
               width: 250.0,
               height: _timerGambar.isActive ? 250.0 : 0,
@@ -193,17 +215,17 @@ class _GameState extends State<Game> {
                 opacity: opacityLev,
                 duration: const Duration(seconds: 3),
                 child: Image.network(questions[i].answer),
-              )
-          ),
+              )),
           Container(
               width: 25.0,
-            height: animatedAnswer == true ? MediaQuery.of(context).size.height : 0,
+              height: animatedAnswer == true
+                  ? MediaQuery.of(context).size.height
+                  : 0,
               child: GridView.count(
-                childAspectRatio: (1/.4),
+                childAspectRatio: (1 / .4),
                 crossAxisCount: 2,
                 children: gambar(j),
-              )
-          ),
+              )),
         ],
       ),
       appBar: AppBar(
@@ -211,4 +233,16 @@ class _GameState extends State<Game> {
       ),
     );
   }
+}
+
+void setHighscore() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  // untuk urut berdasarkan score
+  list.sort((a, b) => a.score.compareTo(b.score));
+  list.reversed;
+
+  // masukin ke prefs
+  List<String> list_highscore = list.map((e) => jsonEncode(e.toMap())).toList();
+  prefs.setStringList("highscore", list_highscore);
 }
