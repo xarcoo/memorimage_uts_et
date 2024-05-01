@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:memorimage_uts_et/class/question.dart';
-import 'package:memorimage_uts_et/class/user_highscore.dart';
 import 'package:memorimage_uts_et/result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -61,18 +59,23 @@ class _GameState extends State<Game> {
         animatedQuestion = true;
         if (opacityLev == 0) {
           opacityLev = 1;
-          if (i == _questions.length - 1) {
+          if (i == 4) {
             timer.cancel();
             opacityLev = 0;
             animatedAnswer = true;
+
             _timerSoal = Timer.periodic(Duration(seconds: 30), (timer) {
               setState(() {
                 opLevSoal = 1;
-                if (j == _questions.length - 1) {
+                if (j == 4) {
                   timer.cancel();
                   // opLevSoal = 0;
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const Result()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Result(),
+                    ),
+                  );
                 } else {
                   j++;
                 }
@@ -96,7 +99,7 @@ class _GameState extends State<Game> {
         child: AnimatedOpacity(
           opacity: animatedAnswer == true ? opLevSoal : 0,
           duration: Duration(seconds: 1),
-          child: Image.network(_questions[i].option_a),
+          child: Image.asset(_questions[i].option_a),
         ),
       ),
       onPressed: () {
@@ -109,7 +112,7 @@ class _GameState extends State<Game> {
       child: AnimatedOpacity(
         opacity: animatedAnswer == true ? opLevSoal : 0,
         duration: Duration(seconds: 1),
-        child: Image.network(_questions[i].option_b),
+        child: Image.asset(_questions[i].option_b),
       ),
       onPressed: () {
         setState(() {
@@ -119,9 +122,9 @@ class _GameState extends State<Game> {
     );
     TextButton c = TextButton(
       child: AnimatedOpacity(
-      opacity: animatedAnswer == true ? opLevSoal : 0,
-      duration: Duration(seconds: 1),
-      child: Image.network(_questions[i].option_c),
+        opacity: animatedAnswer == true ? opLevSoal : 0,
+        duration: Duration(seconds: 1),
+        child: Image.asset(_questions[i].option_c),
       ),
       onPressed: () {
         setState(() {
@@ -131,9 +134,9 @@ class _GameState extends State<Game> {
     );
     TextButton d = TextButton(
       child: AnimatedOpacity(
-      opacity: animatedAnswer == true ? opLevSoal : 0,
-      duration: Duration(seconds: 1),
-      child: Image.network(_questions[i].option_d),
+        opacity: animatedAnswer == true ? opLevSoal : 0,
+        duration: Duration(seconds: 1),
+        child: Image.asset(_questions[i].option_d),
       ),
       onPressed: () {
         setState(() {
@@ -154,40 +157,34 @@ class _GameState extends State<Game> {
   void dispose() {
     _timer.cancel();
     _timerGambar.cancel();
-    // _hitung = 0;
     super.dispose();
   }
-
-  // finishGame() {
-  //   _timer.cancel();
-  //   _timerGambar.cancel();
-  //   j = 0;
-  // }
 
   void checkAnswer(String answer) {
     setState(() {
       if (answer == _questions[j].answer) {
         userPoint += 100;
         userGuess += 1;
-        // userGuess++;
       } else {
         userPoint -= 50;
       }
 
-      if (j < questions.length - 1) {
-
+      if (j < 4) {
         j++;
       } else {
         setScore();
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const Result()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Result(),
+          ),
+        );
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text("GAME"),
@@ -213,7 +210,7 @@ class _GameState extends State<Game> {
             child: AnimatedOpacity(
               opacity: opacityLev,
               duration: const Duration(seconds: 3),
-              child: Image.network(questions[i].answer),
+              child: Image.asset(questions[i].answer),
             ),
           ),
           Container(
@@ -223,7 +220,7 @@ class _GameState extends State<Game> {
             child: GridView.count(
               childAspectRatio: (1 / .4),
               crossAxisCount: 2,
-              children: gambar(j)
+              children: gambar(j),
             ),
           ),
         ],
@@ -235,7 +232,6 @@ class _GameState extends State<Game> {
 void setScore() async {
   final prefs = await SharedPreferences.getInstance();
 
-  // masukin ke prefs
   prefs.setInt("point", userPoint);
   prefs.setInt("guess", userGuess);
 

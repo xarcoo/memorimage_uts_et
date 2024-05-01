@@ -72,13 +72,8 @@ class _Result extends State<Result> {
         addHighscore(UserHighscore(_prefs['user'], _prefs['point']));
       });
     });
-
-    // masukin ke list
-    // list.add(UserHighscore(active_user, right_guess));
-    // addHighscore(UserHighscore(active_user, point));
   }
 
-  // ini untuk dapet list highscore
   Future<List<String>> getHighscore() async {
     final sp_highscore = await SharedPreferences.getInstance();
     List<String> listTmp = sp_highscore.getStringList('highscore') ?? [];
@@ -94,18 +89,12 @@ class _Result extends State<Result> {
 
       list_highscore.sort((b, a) => a.score.compareTo(b.score));
     } else {
-      // for (var item in list_highscore) {
-      // if (right_guess >= item.score) {
       list_highscore.add(uh);
 
       list_highscore.sort((b, a) => a.score.compareTo(b.score));
       if (list_highscore.length > 3) {
         list_highscore.removeLast();
       }
-
-      // break;
-      // }
-      // }
     }
 
     List<String> listTemp =
