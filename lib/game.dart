@@ -28,9 +28,11 @@ class _GameState extends State<Game> {
   bool animated = false;
   late Timer _timer;
   late Timer _timerGambar;
+  late Timer _timerSoal;
   bool animatedAnswer = false;
   bool animatedQuestion = false;
-  double opacityLev = 0;
+  double opacityLev = 1;
+  double opLevSoal = 1;
   List<Question> _questions = [];
   int i = 0;
   int j = 0;
@@ -63,6 +65,19 @@ class _GameState extends State<Game> {
             timer.cancel();
             opacityLev = 0;
             animatedAnswer = true;
+            _timerSoal = Timer.periodic(Duration(seconds: 30), (timer) {
+              setState(() {
+                opLevSoal = 1;
+                if (j == _questions.length - 1) {
+                  timer.cancel();
+                  // opLevSoal = 0;
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Result()));
+                } else {
+                  j++;
+                }
+              });
+            });
           } else {
             i++;
           }
@@ -73,35 +88,53 @@ class _GameState extends State<Game> {
     });
   }
 
-  List<Widget> gambar(int i) {
-    List<Widget> temp = [];
+  List<TextButton> gambar(int i) {
+    List<TextButton> temp = [];
 
-    Widget a = TextButton(
-      child: Image.network(_questions[i].option_a),
+    TextButton a = TextButton(
+      child: Container(
+        child: AnimatedOpacity(
+          opacity: animatedAnswer == true ? opLevSoal : 0,
+          duration: Duration(seconds: 1),
+          child: Image.network(_questions[i].option_a),
+        ),
+      ),
       onPressed: () {
         setState(() {
           checkAnswer(_questions[i].option_a);
         });
       },
     );
-    Widget b = TextButton(
-      child: Image.network(_questions[i].option_b),
+    TextButton b = TextButton(
+      child: AnimatedOpacity(
+        opacity: animatedAnswer == true ? opLevSoal : 0,
+        duration: Duration(seconds: 1),
+        child: Image.network(_questions[i].option_b),
+      ),
       onPressed: () {
         setState(() {
           checkAnswer(_questions[i].option_b);
         });
       },
     );
-    Widget c = TextButton(
+    TextButton c = TextButton(
+      child: AnimatedOpacity(
+      opacity: animatedAnswer == true ? opLevSoal : 0,
+      duration: Duration(seconds: 1),
       child: Image.network(_questions[i].option_c),
+      ),
       onPressed: () {
         setState(() {
           checkAnswer(_questions[i].option_c);
         });
       },
     );
-    Widget d = TextButton(
+    TextButton d = TextButton(
+      child: AnimatedOpacity(
+      opacity: animatedAnswer == true ? opLevSoal : 0,
+      duration: Duration(seconds: 1),
       child: Image.network(_questions[i].option_d),
+      ),
       onPressed: () {
         setState(() {
           checkAnswer(_questions[i].option_d);
@@ -133,65 +166,21 @@ class _GameState extends State<Game> {
 
   void checkAnswer(String answer) {
     setState(() {
+      if (answer == _questions[j].answer) {
+        userPoint += 100;
+        userGuess += 1;
+        // userGuess++;
+      } else {
+        userPoint -= 50;
+      }
+
       if (j < questions.length - 1) {
-        if (answer == _questions[j].answer) {
-          showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: Text('Quiz'),
-              content: Text('Point gain +100'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
-                    Navigator.of(context).pop();
-                    userPoint += 100;
-                  },
-                  child: const Text('OK'),
-                )
-              ],
-            ),
-          );
-          // userGuess++;
-        } else {
-          showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: Text('Quiz'),
-              content: Text('Point gain -50'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) => TopPlayer()));
-                    Navigator.of(context).pop();
-                    userPoint -= 50;
-                  },
-                  child: const Text('OK'),
-                )
-              ],
-            ),
-          );
-        }
+
         j++;
       } else {
-        showDialog<String>(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: Text('Quiz'),
-            content: Text('Your total point is ' + userPoint.toString()),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  setScore();
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const Result()));
-                  // Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              )
-            ],
-          ),
-        );
+        setScore();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const Result()));
       }
     });
   }
@@ -234,7 +223,7 @@ class _GameState extends State<Game> {
             child: GridView.count(
               childAspectRatio: (1 / .4),
               crossAxisCount: 2,
-              children: gambar(j),
+              children: gambar(j)
             ),
           ),
         ],
