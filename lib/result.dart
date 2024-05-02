@@ -103,18 +103,12 @@ class _Result extends State<Result> {
     prefsAdd.setStringList('highscore', listTemp);
   }
 
-  // void setHighscore() async {
-  //   final prefs = await SharedPreferences.getInstance();
+  void removePrefs() async {
+    final prefs = await SharedPreferences.getInstance();
 
-  //   // untuk urut berdasarkan score
-  //   list.sort((a, b) => a.score.compareTo(b.score));
-  //   list.reversed;
-
-  //   // masukin ke prefs
-  //   List<String> list_highscore =
-  //       list.map((e) => jsonEncode(e.toMap())).toList();
-  //   prefs.setStringList("highscore", list_highscore);
-  // }
+    prefs.remove("point");
+    prefs.remove("guess");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +144,7 @@ class _Result extends State<Result> {
               children: [
                 ElevatedButton(
                   onPressed: () {
+                    removePrefs();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -161,6 +156,7 @@ class _Result extends State<Result> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    removePrefs();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -172,6 +168,7 @@ class _Result extends State<Result> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    removePrefs();
                     Navigator.push(
                       context,
                       MaterialPageRoute(

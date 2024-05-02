@@ -70,6 +70,7 @@ class _GameState extends State<Game> {
                 if (j == 4) {
                   timer.cancel();
                   // opLevSoal = 0;
+                  animatedAnswer = false;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -157,6 +158,10 @@ class _GameState extends State<Game> {
   void dispose() {
     _timer.cancel();
     _timerGambar.cancel();
+    animatedAnswer = false;
+    animatedQuestion = false;
+    i = 0;
+    j = 0;
     super.dispose();
   }
 
