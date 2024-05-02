@@ -30,7 +30,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Container(
         height: 300,
@@ -80,7 +80,7 @@ class _LoginState extends State<Login> {
                     doLogin();
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.green),
+                    backgroundColor: MaterialStateProperty.all(Color(0xd0bcff)),
                   ),
                   child: Text(
                     'Login',

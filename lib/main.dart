@@ -108,14 +108,26 @@ class _HomePageState extends State<HomePage> {
             height: 500,
             child: Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Ini Game menebak Gambar"),
+                  Text(
+                    "Remember the Cards",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Divider(
+                    height: 50,
+                    color: Colors.transparent,
+                  ),
                   ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Game()));
-                      },
-                      child: Text("Play Game")),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Game()));
+                    },
+                    child: Text("Play Game"),
+                  ),
                 ],
               ),
             ),

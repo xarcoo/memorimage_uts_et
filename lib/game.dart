@@ -195,14 +195,25 @@ class _GameState extends State<Game> {
           Container(
             width: 250.0,
             height: animatedQuestion == true
-                ? 20.0
+                ? 50
                 : MediaQuery.of(context).size.height,
             child: AnimatedAlign(
               alignment: animated ? Alignment.topCenter : Alignment.center,
               duration: const Duration(seconds: 2),
               curve: Curves.fastOutSlowIn,
-              child: Text("Get Ready"),
+              child: Text(
+                "Remember the Cards",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
+            margin: EdgeInsets.all(20),
+          ),
+          Divider(
+            height: 20,
+            color: Colors.transparent,
           ),
           Container(
             width: 250.0,
@@ -231,6 +242,10 @@ class _GameState extends State<Game> {
 
 void setScore() async {
   final prefs = await SharedPreferences.getInstance();
+
+  if (userPoint < 0) {
+    userPoint = 0;
+  }
 
   prefs.setInt("point", userPoint);
   prefs.setInt("guess", userGuess);

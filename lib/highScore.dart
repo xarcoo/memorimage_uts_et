@@ -42,22 +42,38 @@ class _Highscore extends State<Highscore> {
   List<Widget> widgets() {
     List<Widget> tmp = [];
     int i = 1;
-    for (var item in list_highscore) {
+    if (list_highscore.isEmpty) {
       Widget w = Container(
         child: Column(
           children: [
             Align(
-              alignment: Alignment.center,
-              child: Text(
-                '$i. ' + item.username + '(' + item.score.toString() + ')',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
+                alignment: Alignment.center,
+                child: Text(
+                  'There are no record of any highscore',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                )),
           ],
         ),
       );
-      i++;
       tmp.add(w);
+    } else {
+      for (var item in list_highscore) {
+        Widget w = Container(
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  '$i. ' + item.username + ' (' + item.score.toString() + ')',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        );
+        i++;
+        tmp.add(w);
+      }
     }
     return tmp;
   }
@@ -77,6 +93,10 @@ class _Highscore extends State<Highscore> {
                 'HIGHSCORE',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
+            ),
+            Divider(
+              height: 20,
+              color: Colors.transparent,
             ),
             ...widgets(),
           ],

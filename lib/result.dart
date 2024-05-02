@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:memorimage_uts_et/game.dart';
 import 'package:memorimage_uts_et/highscore.dart';
 import 'package:memorimage_uts_et/class/user_highscore.dart';
@@ -124,11 +125,24 @@ class _Result extends State<Result> {
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               child: Text(
-                'Congratulation, champ $active_user, the $user_title',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                'Congratulation champ $active_user!',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Container(
+              child: Text(
+                'the $user_title',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Row(
